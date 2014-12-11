@@ -1,3 +1,5 @@
+import org.junit.Test;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -8,10 +10,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Schoenfinkeln {
-
     public static final String FILENAME = "/tmp/test.txt";
 
-    public static void main(String args[]) {
+    @Test
+    public void testCurrying() {
         final List<String> list = Arrays.asList("Hans", "Nina", "Petz", "Maja");
 
         final Function<PrintStream, Consumer<Object>> printTo = printStream -> object -> printStream.println(object);
