@@ -1,0 +1,1 @@
+This is just a small playground project for Java 8 features.
