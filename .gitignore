@@ -1,3 +1,5 @@
 /.idea/
+/lib/
+/app.jar
 /atlassian-ide-plugin.xml
 java8-playground.iml
