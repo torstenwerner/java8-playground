@@ -7,10 +7,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 public class CheckOptional {
+    // still no collection literals
     final List<String> list = Arrays.asList("test", "hello");
 
     @Test
@@ -18,13 +18,14 @@ public class CheckOptional {
         final Optional<String> hello = Optional.of("hello");
         assertThat(hello.get(), is("hello"));
         try {
-            Optional.of(null);
+            final Optional<String> empty = Optional.of(null);
             fail();
         } catch (NullPointerException e) {
             //e.printStackTrace();
         }
+        final Optional<String> empty = Optional.empty();
         try {
-            Optional.empty().get();
+            empty.get();
             fail();
         } catch (NoSuchElementException e) {
             //e.printStackTrace();
@@ -33,11 +34,12 @@ public class CheckOptional {
 
     @Test
     public void testOrElse() throws Exception {
-        assertThat(lengthOfString(null), is(0));
         assertThat(lengthOfString("test"), is(4));
+        assertThat(lengthOfString(""), is(0));
+        assertThat(lengthOfString(null), is(0));
     }
 
-    private Integer lengthOfString(String string) {
+    private int lengthOfString(String string) {
         return Optional.ofNullable(string).map(String::length).orElse(0);
     }
 
