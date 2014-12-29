@@ -47,22 +47,21 @@ public class Schoenfinkeln {
         list.forEach(item -> System.out.println(item));
         list.forEach(System.out::println);
         list.forEach(this::printToSystemOut);
-
-        final Consumer<String> printToSystemOut_ = System.out::println;
-        list.forEach(printToSystemOut_);
     }
 
-    // but namespace pollution
     private void printToSystemOut(Object value) {
         System.out.println(value);
     }
 
     @Test
+    public void testConsumer() throws Exception {
+        final Consumer<String> printToSystemOut_ = System.out::println;
+        list.forEach(printToSystemOut_);
+    }
+
+    @Test
     public void testHigherOrderFunction() throws Exception {
         list.forEach(printTo(System.out));
-
-        final Function<PrintStream, Consumer<String>> printTo_ = printStream -> value -> printStream.println(value);
-        list.forEach(printTo_.apply(System.out));
     }
 
     private Consumer<String> printTo(PrintStream printStream) {
@@ -71,26 +70,24 @@ public class Schoenfinkeln {
 
     @Test
     public void testCurrying() {
-        final Function<PrintStream, Consumer<Object>> printTo = printStream -> object -> printStream.println(object);
-        list.forEach(printTo.apply(System.out));
+        final Function<PrintStream, Consumer<Object>> printTo_ = printStream -> value -> printStream.println(value);
+        list.forEach(printTo_.apply(System.out));
 
-        final Function<String, OutputStream> fileOutputStream = name -> {
+        final Function<OutputStream, PrintStream> printStreamOf = PrintStream::new; // or: os -> new PrintStream(os)
+
+        final Function<String, OutputStream> fileOutputStreamOf = fileName -> {
             try {
-                return new FileOutputStream(name);
+                return new FileOutputStream(fileName);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
         };
 
-        final OutputStream outputStream = fileOutputStream.apply(FILENAME);
-        final Function<OutputStream, PrintStream> printStreamOf = PrintStream::new;
-        list.forEach(printTo.compose(printStreamOf).apply(outputStream));
-        list.forEach(printStreamOf.andThen(printTo).apply(outputStream));
+        list.forEach(printTo_.compose(printStreamOf).compose(fileOutputStreamOf).apply(FILENAME));
 
-        list.forEach(printTo.compose(printStreamOf).compose(fileOutputStream).apply(FILENAME));
-        list.forEach(fileOutputStream.andThen(printStreamOf).andThen(printTo).apply(FILENAME));
+        list.forEach(fileOutputStreamOf.andThen(printStreamOf).andThen(printTo_).apply(FILENAME));
 
-        list.forEach(fileOutputStream.andThen(printStreamOf).andThen(printTo).apply(FILENAME)
-                .andThen(printTo.apply(System.out)));
+        list.forEach(fileOutputStreamOf.andThen(printStreamOf).andThen(printTo_).apply(FILENAME)
+                .andThen(printTo_.apply(System.out)));
     }
 }
