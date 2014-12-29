@@ -30,6 +30,7 @@ public class Streams {
                 .filter(value -> value.contains("a"))
                 .map(String::toUpperCase)
                 .distinct()
+                .peek(value -> System.out.printf("peek value: %s\n", value))
                 .sorted()
                 .collect(Collectors.joining(", "));
         System.out.println(asString);
