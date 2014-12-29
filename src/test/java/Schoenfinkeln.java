@@ -10,12 +10,67 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Schoenfinkeln {
-    public static final String FILENAME = "/tmp/test.txt";
+    private final List<String> list = Arrays.asList("Hans", "Nina", "Petz", "Maja");
+    private final String FILENAME = "/tmp/test.txt";
+
+    @Test
+    public void testJava4() throws Exception {
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+        }
+    }
+
+    @Test
+    public void testJava5() throws Exception {
+        for (String s : list) {
+            System.out.println(s);
+        }
+    }
+
+    @Test
+    public void testAnonymousClass() throws Exception {
+        // higher flexibility
+        list.forEach(new Consumer<String>() {
+            @Override
+            public void accept(String s) {
+                System.out.println(s);
+            }
+        });
+    }
+
+    @Test
+    public void testJava8() throws Exception {
+        // shorter and invoke_dynamic()
+        list.forEach((String item) -> { System.out.println(item); });
+        list.forEach((String item) -> System.out.println(item));
+        list.forEach((item) -> System.out.println(item));
+        list.forEach(item -> System.out.println(item));
+        list.forEach(System.out::println);
+        list.forEach(this::printToSystemOut);
+
+        final Consumer<String> printToSystemOut_ = System.out::println;
+        list.forEach(printToSystemOut_);
+    }
+
+    // but namespace pollution
+    private void printToSystemOut(Object value) {
+        System.out.println(value);
+    }
+
+    @Test
+    public void testHigherOrderFunction() throws Exception {
+        list.forEach(printTo(System.out));
+
+        final Function<PrintStream, Consumer<String>> printTo_ = printStream -> value -> printStream.println(value);
+        list.forEach(printTo_.apply(System.out));
+    }
+
+    private Consumer<String> printTo(PrintStream printStream) {
+        return value -> printStream.println(value); // or: printStream::println
+    }
 
     @Test
     public void testCurrying() {
-        final List<String> list = Arrays.asList("Hans", "Nina", "Petz", "Maja");
-
         final Function<PrintStream, Consumer<Object>> printTo = printStream -> object -> printStream.println(object);
         list.forEach(printTo.apply(System.out));
 
