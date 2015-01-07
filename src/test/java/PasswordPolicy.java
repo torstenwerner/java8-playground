@@ -1,12 +1,10 @@
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
@@ -30,12 +28,13 @@ public class PasswordPolicy {
         Function<IntPredicate, Integer> findCategoryIndex =
                 predicate -> IntStream.range(0, categories.size()).filter(predicate).findAny().orElse(-1);
 
-        final Set<Integer> categoryIndexes = password.chars()
+        final long categoryCount = password.chars()
                 .mapToObj(hasCategory)
                 .map(findCategoryIndex)
-                .collect(Collectors.toSet());
+                .distinct()
+                .count();
 
-        return categoryIndexes.size() >= MIN_CATEGORY_COUNT;
+        return categoryCount >= MIN_CATEGORY_COUNT;
     }
 
     @Test
