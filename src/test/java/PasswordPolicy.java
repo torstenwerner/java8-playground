@@ -2,9 +2,9 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
@@ -25,12 +25,15 @@ public class PasswordPolicy {
 
         BiPredicate<Integer, String> isInString = (character, string) -> string.indexOf(character) >= 0;
         IntFunction<IntPredicate> hasCategory = character -> index -> isInString.test(character, categories.get(index));
-        Function<IntPredicate, Integer> findCategoryIndex =
-                predicate -> IntStream.range(0, categories.size()).filter(predicate).findAny().orElse(-1);
+
+        ToIntFunction<IntPredicate> findCategoryIndex = predicate -> IntStream.range(0, categories.size())
+                .filter(predicate)
+                .findFirst()
+                .orElse(-1);
 
         final long categoryCount = password.chars()
                 .mapToObj(hasCategory)
-                .map(findCategoryIndex)
+                .mapToInt(findCategoryIndex)
                 .distinct()
                 .count();
 
