@@ -24,6 +24,7 @@ public class PasswordPolicy {
         }
 
         BiPredicate<Integer, String> isInString = (character, string) -> string.indexOf(character) >= 0;
+        //BiPredicate<Integer, String> isInString = (character, string) -> string.chars().anyMatch(character::equals);
         IntFunction<IntPredicate> hasCategory = character -> index -> isInString.test(character, categories.get(index));
 
         ToIntFunction<IntPredicate> findCategoryIndex = predicate -> IntStream.range(0, categories.size())
