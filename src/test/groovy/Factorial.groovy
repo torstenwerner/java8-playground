@@ -1,6 +1,7 @@
 import spock.lang.Specification
 
 class Factorial extends Specification {
+    @SuppressWarnings("GroovyAssignabilityCheck")
     def "test factorial method"() {
         expect:
         factorial(number) == result
