@@ -3,6 +3,7 @@ import org.junit.Test;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
@@ -21,7 +22,7 @@ public class BlockingQueueTest {
             queue.put(i);
             System.out.printf("%s: put item #%d\n", Thread.currentThread().getName(), i);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -32,12 +33,16 @@ public class BlockingQueueTest {
 
     private void consume() {
         try {
-            System.out.printf("%s: will take\n", Thread.currentThread().getName());
-            int i = queue.take();
+            System.out.printf("%s: will poll\n", Thread.currentThread().getName());
+            Integer i = queue.poll(100, TimeUnit.MILLISECONDS);
+            if (i == null) {
+                System.out.printf("%s: got nothing\n", Thread.currentThread().getName());
+                return;
+            }
             Thread.sleep(ThreadLocalRandom.current().nextInt(1000));
             System.out.printf("%s: processed item %d\n", Thread.currentThread().getName(), i);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -56,7 +61,7 @@ public class BlockingQueueTest {
             consumerThread1.join();
             consumerThread2.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 }
