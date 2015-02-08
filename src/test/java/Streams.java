@@ -16,7 +16,7 @@ public class Streams {
         }
     };
 
-    private final List<String> list = Arrays.asList("Nina", "Petz", "Maja", "Hans", "HANS");
+    private final List<String> list = Arrays.asList("Nina", null, "Petz", "Maja", "Hans", "HANS");
 
     @Test
     public void testForEach() throws Exception {
@@ -27,7 +27,7 @@ public class Streams {
     @Test
     public void testCollect() throws Exception {
         final String asString = list.stream()
-                .filter(value -> value.contains("a"))
+                .filter(value -> value != null && value.contains("a"))
                 .map(String::toUpperCase)
                 .distinct()
                 .peek(value -> System.out.printf("peek value: %s\n", value))
@@ -39,7 +39,7 @@ public class Streams {
     @Test
     public void testToList() throws Exception {
         final List<String> asList = list.stream()
-                .filter(value -> value.contains("a"))
+                .filter(value -> value != null && value.contains("a"))
                 .map(String::toUpperCase)
                 .distinct()
                 .sorted()
@@ -50,6 +50,7 @@ public class Streams {
     @Test
     public void testToSet() throws Exception {
         final Set<String> asSet = list.stream()
+                .filter(value -> value != null)
                 .map(String::toUpperCase)
                 .collect(Collectors.toCollection(TreeSet<String>::new));
         System.out.println(asSet);
@@ -58,6 +59,7 @@ public class Streams {
     @Test
     public void testGroupBy() throws Exception {
         final Map<String, Long> asMap = list.stream()
+                .filter(value -> value != null)
                 .collect(Collectors.groupingBy(String::toUpperCase, Collectors.counting()));
         System.out.println(asMap);
     }
