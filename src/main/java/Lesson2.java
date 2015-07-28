@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparingInt;
+
 /**
  * @author Speakjava (simon.ritter@oracle.com)
  */
@@ -139,7 +141,7 @@ public class Lesson2 {
                 Paths.get("src/main/resources/Lesson2.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
                     .flatMap(s -> Arrays.stream(s.toLowerCase().split(WORD_REGEXP)))
-                    .sorted((o1, o2) -> o1.length() - o2.length())
+                    .sorted(comparingInt(String::length))
                     .distinct()
                     .forEach(System.out::println);
         }
