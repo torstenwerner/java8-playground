@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.stream;
 import static java.util.Comparator.comparingInt;
 
 /**
@@ -112,7 +113,7 @@ public class Lesson2 {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("src/main/resources/Lesson2.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
-                    .flatMap(s -> Arrays.stream(s.split(WORD_REGEXP)))
+                    .flatMap(line -> stream(line.split(WORD_REGEXP)))
                     .distinct()
                     .forEach(System.out::println);
         }
@@ -126,7 +127,7 @@ public class Lesson2 {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("src/main/resources/Lesson2.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
-                    .flatMap(s -> Arrays.stream(s.toLowerCase().split(WORD_REGEXP)))
+                    .flatMap(line -> stream(line.toLowerCase().split(WORD_REGEXP)))
                     .sorted()
                     .distinct()
                     .forEach(System.out::println);
@@ -140,7 +141,7 @@ public class Lesson2 {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("src/main/resources/Lesson2.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
-                    .flatMap(s -> Arrays.stream(s.toLowerCase().split(WORD_REGEXP)))
+                    .flatMap(line -> stream(line.toLowerCase().split(WORD_REGEXP)))
                     .sorted(comparingInt(String::length))
                     .distinct()
                     .forEach(System.out::println);
