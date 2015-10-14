@@ -6,7 +6,7 @@ public class Promise {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Thread.sleep(100);
-                return text;
+                return text.toUpperCase();
             } catch (InterruptedException e) {
                 throw new CompletionException(e);
             }
