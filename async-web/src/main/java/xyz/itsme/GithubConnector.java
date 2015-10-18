@@ -4,8 +4,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.client.AsyncRestOperations;
+import org.springframework.web.client.AsyncRestTemplate;
 
 import java.net.URL;
 import java.util.Map;
@@ -13,11 +14,11 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class GithubConnector {
-    private final RestOperations restOperations = new RestTemplate();
+    private final AsyncRestOperations restOperations = new AsyncRestTemplate();
 
     public CompletableFuture<Map<String, URL>> root() {
         final CompletableFuture<Map<String, URL>> promise = new CompletableFuture<>();
-        promise.complete(callGithub().getBody());
+        callGithub().addCallback(result -> promise.complete(result.getBody()), promise::completeExceptionally);
         return promise;
     }
 
@@ -25,7 +26,7 @@ public class GithubConnector {
             new ParameterizedTypeReference<Map<String, URL>>() {
             };
 
-    private ResponseEntity<Map<String, URL>> callGithub() {
+    private ListenableFuture<ResponseEntity<Map<String, URL>>> callGithub() {
         return restOperations.exchange("https://api.github.com/", HttpMethod.GET, null, responseType);
     }
 }
