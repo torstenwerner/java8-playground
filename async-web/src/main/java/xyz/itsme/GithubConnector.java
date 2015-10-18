@@ -18,7 +18,7 @@ public class GithubConnector {
 
     public CompletableFuture<Map<String, URL>> root() {
         final CompletableFuture<Map<String, URL>> promise = new CompletableFuture<>();
-        callGithub().addCallback(result -> promise.complete(result.getBody()), promise::completeExceptionally);
+        callGithub().addCallback(response -> promise.complete(response.getBody()), promise::completeExceptionally);
         return promise;
     }
 
