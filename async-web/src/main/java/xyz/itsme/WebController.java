@@ -22,11 +22,8 @@ public class WebController {
     public DeferredResult<Map<String, URL>> root() {
         final DeferredResult<Map<String, URL>> deferredResult = new DeferredResult<>(60000);
         connector.root()
-                .thenAccept(deferredResult::setResult)
-                .exceptionally(throwable -> {
-                    deferredResult.setErrorResult(throwable);
-                    return null;
-                });
+                .thenApply(deferredResult::setResult)
+                .exceptionally(deferredResult::setErrorResult);
         return deferredResult;
     }
 }
