@@ -1,7 +1,7 @@
 /.gradle/
 /.idea/
-/build/
+build/
 /lib/
 /app.jar
 /atlassian-ide-plugin.xml
-/java8-playground.iml
+*.iml
