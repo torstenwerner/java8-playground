@@ -26,7 +26,7 @@ public class GithubConnector {
         final RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout(10000)
                 .setConnectTimeout(10000)
-                .setSocketTimeout(60000)
+                .setSocketTimeout(10000)
                 .build();
 
         // set request configuration and connection pool size
