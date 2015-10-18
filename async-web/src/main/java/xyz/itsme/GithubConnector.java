@@ -1,43 +1,25 @@
 package xyz.itsme;
 
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.AsyncClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.client.AsyncRestOperations;
-import org.springframework.web.client.AsyncRestTemplate;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class GithubConnector {
     private final AsyncRestOperations restOperations;
 
-    public GithubConnector() {
-        // set timeouts in milliseconds
-        final RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(10000)
-                .setConnectTimeout(10000)
-                .setSocketTimeout(10000)
-                .build();
-
-        // set request configuration and connection pool size
-        final CloseableHttpAsyncClient asyncClient = HttpAsyncClientBuilder.create()
-                .setDefaultRequestConfig(requestConfig)
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(30)
-                .build();
-
-        final AsyncClientHttpRequestFactory requestFactory = new HttpComponentsAsyncClientHttpRequestFactory(asyncClient);
-        restOperations = new AsyncRestTemplate(requestFactory);
+    @Autowired
+    public GithubConnector(AsyncRestOperations restOperations) {
+        this.restOperations = Objects.requireNonNull(restOperations);
     }
 
     public CompletableFuture<Map<String, URL>> root() {

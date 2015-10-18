@@ -8,6 +8,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class WebController {
@@ -15,7 +16,7 @@ public class WebController {
 
     @Autowired
     public WebController(GithubConnector connector) {
-        this.connector = connector;
+        this.connector = Objects.requireNonNull(connector);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
